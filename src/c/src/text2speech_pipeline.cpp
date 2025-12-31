@@ -77,9 +77,11 @@ ov_status_e ov_genai_text2speech_decoded_results_get_speech_at(const ov_genai_te
         ov::Tensor cpp_tensor = results->object->speeches.at(index);
         ov_element_type_e et = (ov_element_type_e)cpp_tensor.get_element_type();
 
+        ov::Shape cpp_shape = cpp_tensor.get_shape();
+        std::vector<int64_t> dims(cpp_shape.begin(), cpp_shape.end());
         ov_shape_t shape;
-        shape.rank = cpp_tensor.get_shape().size();
-        shape.dims = (int64_t*)cpp_tensor.get_shape().data();
+        shape.rank = dims.size();
+        shape.dims = dims.data();
 
         // Wrap the data in an ov_tensor_t. The user will be responsible for freeing it,
         // but the data itself is owned by 'results'.
